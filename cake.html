@@ -37,41 +37,53 @@
             100% { transform: scale(1); }
         }
 
-        /* Circular Side Timer */
+        /* --- VERY SMALL CIRCULAR TIMER --- */
         .side-timer-circle {
             position: fixed;
-            right: 20px;
+            right: 15px;
             top: 50%;
             transform: translateY(-50%);
-            width: 100px;
-            height: 100px;
+            width: 50px;   /* Size reduced */
+            height: 50px;  /* Size reduced */
             background: white;
-            border: 5px solid #FF5E8E;
             border-radius: 50%;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             z-index: 1000;
-            text-align: center;
+        }
+
+        .timer-svg {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            transform: rotate(-90deg);
+        }
+
+        .timer-svg circle {
+            fill: none;
+            stroke-width: 3; /* Thin line for small size */
+            stroke-linecap: round;
+        }
+
+        .timer-bg { stroke: #f0f0f0; }
+        .timer-progress {
+            stroke: #FF5E8E;
+            stroke-dasharray: 138; /* 2 * PI * 22 */
+            stroke-dashoffset: 138;
+            transition: stroke-dashoffset 1s linear;
         }
 
         .timer-number {
-            font-size: 1.8rem;
+            font-size: 0.9rem; /* Small number */
             font-weight: bold;
             color: #FF5E8E;
-            line-height: 1;
+            z-index: 5;
         }
 
-        .timer-label {
-            font-size: 0.65rem;
-            font-weight: bold;
-            color: #4DD0E1;
-            padding: 0 5px;
-            margin-bottom: 4px;
-            line-height: 1.1;
-        }
+        /* Label removed to keep it small */
+        .timer-label { display: none; }
 
         .main-wrapper {
             display: flex; flex-direction: column;
@@ -92,7 +104,6 @@
         video, .main-img-box { width: 100%; display: block; height: auto; }
         #photo6, #photo8, #photo9 { display: none; }
 
-        /* p1.png යටින් පෙන්වන වැකිය */
         #oneMoreThingText {
             display: none; 
             font-size: 1.5rem;
@@ -132,7 +143,10 @@
     </div>
 
     <div id="sideCircle" class="side-timer-circle" style="display: none;">
-        <div id="phraseLabel" class="timer-label"></div>
+        <svg class="timer-svg">
+            <circle class="timer-bg" cx="25" cy="25" r="22"></circle>
+            <circle class="timer-progress" id="progressBar" cx="25" cy="25" r="22"></circle>
+        </svg>
         <div id="activeSeconds" class="timer-number"></div>
     </div>
 
@@ -173,7 +187,7 @@
             wrapper: document.getElementById('bg-wrapper'),
             sideCircle: document.getElementById('sideCircle'),
             activeSeconds: document.getElementById('activeSeconds'),
-            phraseLabel: document.getElementById('phraseLabel'),
+            progressBar: document.getElementById('progressBar'),
             mainVid: document.getElementById('mainVideo'),
             photo6: document.getElementById('photo6'),
             photo8: document.getElementById('photo8'),
@@ -191,7 +205,7 @@
             elements.overlay.style.display = 'none';
             elements.wrapper.style.visibility = 'visible';
             elements.music.play();
-            runDynamicTimer(32, "Surprise", () => {
+            runDynamicTimer(32, () => {
                 showSequence();
             });
         }
@@ -202,9 +216,9 @@
             document.getElementById('bottomVideo').style.display = 'none';
             
             showPhoto('photo1');
-            runDynamicTimer(5, "Next", () => {
+            runDynamicTimer(5, () => {
                 showPhoto('photo2');
-                runDynamicTimer(5, "Next", () => {
+                runDynamicTimer(5, () => {
                     showPhoto('photo3');
                     elements.blowBtn.style.display = 'block';
                 });
@@ -215,13 +229,12 @@
             elements.music.pause();
             elements.blowMusic.play(); 
             elements.blowBtn.style.display = 'none';
-            // *** File Path changed to videos/ ***
             elements.mainVid.src = "videos/cakeon.mp4";
             elements.mainVid.loop = false; 
             elements.mainVid.play();
 
             showPhoto('photo4');
-            runDynamicTimer(5, "Next", () => {
+            runDynamicTimer(5, () => {
                 showPhoto('photo5');
                 elements.cutBtn.style.display = 'block';
             });
@@ -230,42 +243,45 @@
         function startCutSequence() {
             elements.cutBtn.style.display = 'none';
             elements.mainVid.style.display = 'none';
-            
             elements.photo6.style.display = 'block';
             showPhoto('photo7');
             
-            runDynamicTimer(5, "", () => {
+            runDynamicTimer(5, () => {
                 elements.smallContainer.style.opacity = '0';
                 setTimeout(() => { elements.smallContainer.style.display = 'none'; }, 500);
-                
                 elements.photo6.style.display = 'none';
                 elements.photo8.style.display = 'block';
                 elements.oneMoreThingText.style.display = 'block';
-                
                 popMainDisplay();
                 
-                runDynamicTimer(5, "", () => {
+                runDynamicTimer(5, () => {
                     elements.oneMoreThingText.style.display = 'none';
                     elements.photo8.style.display = 'none';
                     elements.photo9.style.display = 'block';
                     popMainDisplay();
                     
-                    runDynamicTimer(5, "", () => {
+                    runDynamicTimer(5, () => {
                         window.location.href = "cake2.html"; 
                     });
                 });
             });
         }
 
-        function runDynamicTimer(seconds, label, callback) {
+        function runDynamicTimer(seconds, callback) {
             elements.sideCircle.style.display = 'flex';
-            elements.phraseLabel.textContent = label;
             let time = seconds;
             elements.activeSeconds.textContent = time;
             
+            const totalDash = 138; // Circumference (2 * PI * 22)
+            elements.progressBar.style.strokeDashoffset = totalDash;
+
             const timer = setInterval(() => {
                 time--;
                 elements.activeSeconds.textContent = time;
+                
+                let offset = totalDash - ( (seconds - time) / seconds ) * totalDash;
+                elements.progressBar.style.strokeDashoffset = offset;
+
                 if (time <= 0) {
                     clearInterval(timer);
                     elements.sideCircle.style.display = 'none';
