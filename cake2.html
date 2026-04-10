@@ -1,100 +1,127 @@
 <!DOCTYPE html>
-<html lang="si">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Birthday Wish Animation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* මූලික සැකසුම් */
         * { box-sizing: border-box; }
         
         body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
+            margin: 0; padding: 0;
+            height: 100%; width: 100%;
             font-family: 'Poppins', sans-serif;
-            background-color: #FFF9E6; /* කලින් භාවිතා කළ පසුබිම් වර්ණය */
+            overflow: hidden;
+            background-color: #0d1b33; 
+        }
+
+        .page-container {
+            position: relative;
+            width: 100%; height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
-        }
-
-        /* ටයිප් වන අකුරු සඳහා ස්ටයිල් */
-        .wish-container {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-        }
-
-        #typewriter-text {
-            font-size: clamp(1.5rem, 8vw, 3rem); /* Mobile Responsive size */
-            font-weight: bold;
-            color: #FF5E8E; /* කලින් භාවිතා කළ රෝස පැහැය */
-            border-right: 4px solid #FF5E8E; /* Cursor එක */
-            white-space: nowrap;
-            overflow: hidden;
-            width: 0;
-            display: inline-block;
-        }
-
-        /* පසුබිමේ ඇති තිත් (Confetti Dots) */
-        .confetti-dot {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            opacity: 0.6;
             z-index: 1;
         }
 
-        /* Keyframes - ටයිප් වන ආකාරය පෙන්වීමට */
-        @keyframes typing {
-            from { width: 0; }
-            to { width: 100%; }
+        .page-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('bg1.jpg'); 
+            background-size: cover;
+            background-position: center;
+            filter: blur(2px); 
+            transform: scale(1.1);
+            z-index: -1;
         }
 
-        /* Cursor එක blink වීමට */
+        .wish-container {
+            position: relative;
+            z-index: 10;
+            max-width: 85%;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.2); 
+            padding: 30px;
+            border-radius: 20px;
+        }
+
+        #typewriter-text {
+            font-size: clamp(1.2rem, 4vw, 2.2rem); 
+            font-weight: bold;
+            color: #000000; /* අකුරු පැහැදිලිව පෙනීමට නැවත රන් පැහැය යෙදුවා */
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
+            line-height: 2.0; /* පේළි අතර පරතරය වැඩි කළා */
+            display: inline;
+        }
+
+        #cursor {
+            display: inline-block;
+            width: 10px;
+            height: 1.2em;
+            background-color: #FFDF8C;
+            margin-left: 5px;
+            vertical-align: middle;
+            animation: blink 0.7s infinite;
+        }
+
         @keyframes blink {
-            50% { border-color: transparent; }
+            50% { opacity: 0; }
+        }
+
+        .confetti-dot {
+            position: absolute;
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            opacity: 0.6;
+            z-index: 1;
         }
     </style>
 </head>
 <body>
 
-    <div class="wish-container">
-        <div id="typewriter-text">Happy Birthday to You! 🎂</div>
+    <div class="page-container">
+        <div class="wish-container">
+            <span id="typewriter-text"></span><span id="cursor"></span>
+        </div>
     </div>
 
     <script>
+        const text = "Happy 24th Birthday to the girl who stole my heart! ❤️ Every day with you is a gift, and I’m so lucky to have you by my side. May this year bring you all the happiness you deserve, and I wish for all your future dreams and aspirations to come true. I love you more than words can say!";
+        
+        let index = 0;
+        const speed = 80; /* ටයිප් වන වේගය අඩු කළා (අගය වැඩි කිරීමෙන්) */
+
+        function typeWriter() {
+            const textElement = document.getElementById("typewriter-text");
+            const cursorElement = document.getElementById("cursor");
+
+            if (index < text.length) {
+                textElement.innerHTML += text.charAt(index);
+                index++;
+                setTimeout(typeWriter, speed);
+            } else {
+                cursorElement.style.display = "none";
+            }
+        }
+
         window.onload = () => {
-            const textElement = document.getElementById('typewriter-text');
-            
-            // පින්තූරය Load වූ පසු ටයිප් වන ඇනිමේෂන් එක ආරම්භ කිරීම
-            // steps(25) යනු අකුරු ගණනට අනුකූලව වෙනස් කළ හැකි අගයකි
-            textElement.style.animation = "typing 3.5s steps(25) forwards, blink 0.6s infinite";
-            
-            // පසුබිම් තිත් (Confetti Dots) නිර්මාණය කිරීම
-            createDots(60);
+            typeWriter();
+            createDots(40);
         };
 
         function createDots(count) {
-            const colors = ['#FF5E8E', '#FFDB58', '#4DD0E1', '#FFB74D'];
-            
+            const colors = ['#FFDF8C', '#4DD0E1', '#FFFFFF', '#FF5E8E'];
+            const container = document.querySelector('.page-container');
             for (let i = 0; i < count; i++) {
                 const dot = document.createElement('div');
                 dot.className = 'confetti-dot';
-                
-                // අහඹු ලෙස ස්ථානය සහ වර්ණය තේරීම
                 dot.style.left = Math.random() * 100 + 'vw';
                 dot.style.top = Math.random() * 100 + 'vh';
                 dot.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                
-                // කුඩා ඇනිමේෂන් එකක් (මදක් සෙලවීමට)
-                dot.style.transform = `scale(${Math.random()})`;
-                
-                document.body.appendChild(dot);
+                dot.style.transform = `scale(${Math.random() * 1.2})`;
+                container.appendChild(dot);
             }
         }
     </script>
