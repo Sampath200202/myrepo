@@ -67,6 +67,50 @@
 
         @keyframes fadeIn { to { opacity: 1; } }
 
+        /* --- UPDATED SMALL TIMER STYLES --- */
+        .timer-box {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;   /* Size Reduced */
+            height: 50px;  /* Size Reduced */
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .timer-svg {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            transform: rotate(-90deg);
+        }
+
+        .timer-svg circle {
+            fill: none;
+            stroke-width: 3; /* Thinner line */
+            stroke-linecap: round;
+        }
+
+        .timer-bg { stroke: #f0f0f0; }
+
+        .timer-progress {
+            stroke: #FF5E8E;
+            stroke-dasharray: 138; /* 2 * PI * 22 */
+            stroke-dashoffset: 138;
+            transition: stroke-dashoffset 1s linear;
+        }
+
+        #timer-num {
+            font-weight: 700;
+            color: #FF5E8E;
+            font-size: 0.9rem; /* Smaller font */
+        }
+
     </style>
 </head>
 <body>
@@ -74,7 +118,7 @@
     <div class="main-wrapper" id="bg-wrapper">
         
         <div class="wish-header">
-            <h1 class="wish-text">HAPPY BIRTHDAY...!</h1>
+            <h1 class="wish-text">HAPPY BIRTHDAY DULA...!🎂</h1>
         </div>
 
         <div class="video-container">
@@ -83,10 +127,18 @@
             </video>
         </div>
 
+        <div class="timer-box">
+            <svg class="timer-svg">
+                <circle class="timer-bg" cx="25" cy="25" r="22"></circle>
+                <circle class="timer-progress" id="progress-bar" cx="25" cy="25" r="22"></circle>
+            </svg>
+            <div id="timer-num">5</div>
+        </div>
+
     </div>
 
     <script>
-        // 1. පසුබිම් අලංකරණය (Confetti)
+        // 1. Confetti Background
         const wrapper = document.getElementById('bg-wrapper');
         const colors = ['#FF5E8E', '#FFDB58', '#4DD0E1', '#FFB74D'];
 
@@ -99,14 +151,31 @@
             wrapper.appendChild(dot);
         }
 
-        // 2. පසුබිම් ටයිමරය
+        // 2. Timer and Redirection
         window.addEventListener('load', function() {
-            // තත්පර 5කට පසු intro2.html වෙත යන්න
-            setTimeout(() => {
-                window.location.href = "intro2.html"; 
-            }, 5000);
+            let timeLeft = 5;
+            const timerNum = document.getElementById('timer-num');
+            const progressBar = document.getElementById('progress-bar');
+            const totalDash = 138; // 2 * PI * 22
 
-            // 3. වීඩියෝව ස්වයංක්‍රීයව Play කිරීම
+            const timerInterval = setInterval(() => {
+                timePassed = 5 - timeLeft;
+                
+                if (timeLeft >= 0) {
+                    timerNum.innerText = timeLeft;
+                    // Calculate offset for smooth filling
+                    const offset = totalDash - ( (5 - timeLeft) / 5 ) * totalDash;
+                    progressBar.style.strokeDashoffset = offset;
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    window.location.href = "intro2.html"; 
+                }
+                timeLeft--;
+            }, 1000);
+
+            // 3. Autoplay Video
             const video = document.getElementById('bdayVideo');
             video.play().catch(error => {
                 document.body.addEventListener('click', () => {
