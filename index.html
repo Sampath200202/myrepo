@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gift Box Surprise</title>
+    <style>
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            background-color: #fce4ec; font-family: 'Segoe UI', sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center; display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            gap: 20px; width: 100%; height: 100%;
+        }
+
+        .gift-box-wrapper {
+            position: relative; width: 250px; height: 250px;
+            cursor: pointer; z-index: 10; transition: opacity 0.5s;
+        }
+
+        .external-photo {
+            width: 200px; height: auto; border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.5s ease; z-index: 5;
+        }
+
+        .box-body {
+            position: absolute; bottom: 0; width: 100%; height: 150px;
+            background-color: #e91e63; border-radius: 0 0 15px 15px; z-index: 2;
+        }
+
+        .box-lid {
+            position: absolute; bottom: 150px; left: -5%; width: 110%;
+            height: 40px; background-color: #c2185b; border-radius: 8px; z-index: 4;
+        }
+
+        .ribbon-vertical {
+            position: absolute; left: 50%; transform: translateX(-50%);
+            width: 40px; height: 100%; background-color: #fff176;
+        }
+
+        .ribbon-horizontal {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            width: 100%; height: 40px; background-color: #fff176;
+        }
+
+        .bow {
+            position: absolute; top: -50px; left: 50%; transform: translateX(-50%);
+            font-size: 80px; z-index: 5;
+        }
+
+        @keyframes lidFly {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-500px) rotate(45deg); opacity: 0; }
+        }
+
+        .open .box-lid { animation: lidFly 1s forwards; }
+        .open .bow { opacity: 0; transition: 0.3s; }
+
+        .hidden-page-container {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 90%; height: 90%; background: white;
+            z-index: 100; transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 20px; overflow: hidden; opacity: 0;
+        }
+
+        .show-page .hidden-page-container {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .show-page .gift-box-wrapper, 
+        .show-page .external-photo,
+        .show-page h2 {
+            opacity: 0; pointer-events: none;
+        }
+
+        h2 { color: #c2185b; margin: 10px 0; }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="mainContainer">
+        
+        <h2 id="msg"></h2>
+
+        <div class="gift-box-wrapper" id="giftBox" onclick="startAnimation()">
+            <div class="bow">🎀</div>
+            <div class="box-lid"><div class="ribbon-vertical"></div></div>
+            <div class="box-body">
+                <div class="ribbon-vertical"></div>
+                <div class="ribbon-horizontal"></div>
+            </div>
+        </div>
+
+        <img src="images/p10.png" class="external-photo" alt="Photo">
+
+        <div class="hidden-page-container">
+            <iframe id="surpriseFrame" src="" style="width:100%; height:100%; border:none;"></iframe>
+        </div>
+
+    </div>
+
+    <script>
+        function startAnimation() {
+            const gift = document.getElementById('giftBox');
+            const container = document.getElementById('mainContainer');
+            const iframe = document.getElementById('surpriseFrame');
+
+            // 1. පෙට්ටිය විවෘත වීමේ animation එක පටන් ගන්න
+            gift.classList.add('open');
+
+            // 2. තත්පර 0.8 කට පසු (පෙට්ටිය ඇරුණු පසු) පිටුව පෙන්වන්න
+            setTimeout(() => {
+                // *** වැදගත්ම කොටස: පෙට්ටිය ඇරුණු විට පමණක් ලිපිනය ලබා දෙන්න ***
+                iframe.src = "intro1.html"; 
+                
+                container.classList.add('show-page');
+            }, 800);
+        }
+    </script>
+
+</body>
+</html>

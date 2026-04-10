@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Surprise - 30s Music</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body, html {
+            margin: 0; padding: 0; height: 100%; width: 100%;
+            font-family: 'Poppins', sans-serif;
+            background-color: #FFF9E6; 
+            overflow-x: hidden;
+        }
+
+        /* Celebrate Overlay */
+        #celebrateOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #FFF9E6;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            z-index: 2000;
+        }
+
+        .celebrate-btn {
+            background-color: #FF5E8E; color: white;
+            padding: 20px 50px; border-radius: 50px;
+            font-size: 1.8rem; font-weight: bold; border: none;
+            cursor: pointer; box-shadow: 0 10px 25px rgba(255, 94, 142, 0.4);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Circular Side Timer */
+        .side-timer-circle {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100px;
+            height: 100px;
+            background: white;
+            border: 5px solid #FF5E8E;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            z-index: 1000;
+            text-align: center;
+        }
+
+        .timer-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #FF5E8E;
+            line-height: 1;
+        }
+
+        .timer-label {
+            font-size: 0.65rem;
+            font-weight: bold;
+            color: #4DD0E1;
+            padding: 0 5px;
+            margin-bottom: 4px;
+            line-height: 1.1;
+        }
+
+        .main-wrapper {
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            min-height: 100vh; width: 100%; text-align: center; padding: 20px;
+            visibility: hidden; 
+        }
+
+        .video-container {
+            width: clamp(280px, 80vw, 450px);
+            border-radius: 25px; overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            background: #fff; border: 8px solid #fff;
+            margin-bottom: 20px; z-index: 10;
+            transition: transform 0.3s ease;
+        }
+
+        video, .main-img-box { width: 100%; display: block; height: auto; }
+        #photo6, #photo8, #photo9 { display: none; }
+
+        /* p1.png යටින් පෙන්වන වැකිය */
+        #oneMoreThingText {
+            display: none; 
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #FF5E8E;
+            margin-top: -10px; 
+            margin-bottom: 20px;
+            z-index: 11;
+        }
+
+        .action-btn {
+            margin-top: 20px; border: none; padding: 15px 45px;
+            border-radius: 50px; font-size: 1.2rem; font-weight: bold;
+            cursor: pointer; z-index: 10; display: none;
+        }
+
+        .blow-btn { background: #FF5E8E; color: white; }
+        .cut-btn { background: #4DD0E1; color: white; }
+
+        .small-content-container {
+            width: 180px; min-height: 120px; border-radius: 15px;
+            border: 4px solid #fff; box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            background: #fff; overflow: hidden; z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .content-box { width: 100%; height: auto; display: block; }
+        #photo1, #photo2, #photo3, #photo4, #photo5, #photo7 { display: none; }
+        .confetti-dot { position: absolute; width: 8px; height: 8px; border-radius: 50%; opacity: 0.5; z-index: 1; }
+    </style>
+</head>
+<body>
+
+    <div id="celebrateOverlay">
+        <button class="celebrate-btn" onclick="startCelebration()">Celebrate 🎂</button>
+        <p style="margin-top: 20px; color: #FF5E8E; font-weight: bold;">Tap to start the surprise!</p>
+    </div>
+
+    <div id="sideCircle" class="side-timer-circle" style="display: none;">
+        <div id="phraseLabel" class="timer-label"></div>
+        <div id="activeSeconds" class="timer-number"></div>
+    </div>
+
+    <audio id="bgMusic"><source src="audio/music1.mpeg" type="audio/mpeg"></audio>
+    <audio id="blowMusic"><source src="audio/music2.mpeg" type="audio/mpeg"></audio>
+
+    <div class="main-wrapper" id="bg-wrapper">
+        <div class="video-container" id="mainDisplay">
+            <video autoplay muted loop playsinline id="mainVideo">
+                <source src="videos/cakeoff.mp4" type="video/mp4">
+            </video>
+            <img src="images/p3.png" id="photo6" class="main-img-box">
+            <img src="images/p1.jpg" id="photo8" class="main-img-box">
+            <img src="images/p13.png" id="photo9" class="main-img-box">
+        </div>
+
+        <div id="oneMoreThingText">One more thing...</div>
+
+        <div class="small-content-container" id="smallContentContainer">
+            <video autoplay muted loop playsinline id="bottomVideo" class="content-box">
+                <source src="videos/cake3.mp4" type="video/mp4">
+            </video>
+            <img src="images/p5.png" id="photo1" class="content-box">
+            <img src="images/p12.png" id="photo2" class="content-box">
+            <img src="images/p7 (1).png" id="photo3" class="content-box">
+            <img src="images/p8.png" id="photo4" class="content-box">
+            <img src="images/p6.png" id="photo5" class="content-box">
+            <img src="images/p5.png" id="photo7" class="content-box">
+        </div>
+
+        <button id="blowBtn" class="action-btn blow-btn" onclick="startBlowSequence()">BLOW 🎂</button>
+        <button id="cutBtn" class="action-btn cut-btn" onclick="startCutSequence()">CUT 🔪</button>
+    </div>
+
+    <script>
+        const elements = {
+            overlay: document.getElementById('celebrateOverlay'),
+            wrapper: document.getElementById('bg-wrapper'),
+            sideCircle: document.getElementById('sideCircle'),
+            activeSeconds: document.getElementById('activeSeconds'),
+            phraseLabel: document.getElementById('phraseLabel'),
+            mainVid: document.getElementById('mainVideo'),
+            photo6: document.getElementById('photo6'),
+            photo8: document.getElementById('photo8'),
+            photo9: document.getElementById('photo9'),
+            oneMoreThingText: document.getElementById('oneMoreThingText'),
+            blowBtn: document.getElementById('blowBtn'),
+            cutBtn: document.getElementById('cutBtn'),
+            mainDisp: document.getElementById('mainDisplay'),
+            smallContainer: document.getElementById('smallContentContainer'),
+            music: document.getElementById('bgMusic'),
+            blowMusic: document.getElementById('blowMusic')
+        };
+
+        function startCelebration() {
+            elements.overlay.style.display = 'none';
+            elements.wrapper.style.visibility = 'visible';
+            elements.music.play();
+            runDynamicTimer(32, "Surprise", () => {
+                showSequence();
+            });
+        }
+
+        function showSequence() {
+            elements.music.pause(); 
+            elements.music.currentTime = 0; 
+            document.getElementById('bottomVideo').style.display = 'none';
+            
+            showPhoto('photo1');
+            runDynamicTimer(5, "Next", () => {
+                showPhoto('photo2');
+                runDynamicTimer(5, "Next", () => {
+                    showPhoto('photo3');
+                    elements.blowBtn.style.display = 'block';
+                });
+            });
+        }
+
+        function startBlowSequence() {
+            elements.music.pause();
+            elements.blowMusic.play(); 
+            elements.blowBtn.style.display = 'none';
+            // *** File Path changed to videos/ ***
+            elements.mainVid.src = "videos/cakeon.mp4";
+            elements.mainVid.loop = false; 
+            elements.mainVid.play();
+
+            showPhoto('photo4');
+            runDynamicTimer(5, "Next", () => {
+                showPhoto('photo5');
+                elements.cutBtn.style.display = 'block';
+            });
+        }
+
+        function startCutSequence() {
+            elements.cutBtn.style.display = 'none';
+            elements.mainVid.style.display = 'none';
+            
+            elements.photo6.style.display = 'block';
+            showPhoto('photo7');
+            
+            runDynamicTimer(5, "", () => {
+                elements.smallContainer.style.opacity = '0';
+                setTimeout(() => { elements.smallContainer.style.display = 'none'; }, 500);
+                
+                elements.photo6.style.display = 'none';
+                elements.photo8.style.display = 'block';
+                elements.oneMoreThingText.style.display = 'block';
+                
+                popMainDisplay();
+                
+                runDynamicTimer(5, "", () => {
+                    elements.oneMoreThingText.style.display = 'none';
+                    elements.photo8.style.display = 'none';
+                    elements.photo9.style.display = 'block';
+                    popMainDisplay();
+                    
+                    runDynamicTimer(5, "", () => {
+                        window.location.href = "cake2.html"; 
+                    });
+                });
+            });
+        }
+
+        function runDynamicTimer(seconds, label, callback) {
+            elements.sideCircle.style.display = 'flex';
+            elements.phraseLabel.textContent = label;
+            let time = seconds;
+            elements.activeSeconds.textContent = time;
+            
+            const timer = setInterval(() => {
+                time--;
+                elements.activeSeconds.textContent = time;
+                if (time <= 0) {
+                    clearInterval(timer);
+                    elements.sideCircle.style.display = 'none';
+                    callback();
+                }
+            }, 1000);
+        }
+
+        function popMainDisplay() {
+            elements.mainDisp.style.transform = "scale(1.08)";
+            setTimeout(() => elements.mainDisp.style.transform = "scale(1)", 300);
+        }
+
+        function showPhoto(id) {
+            document.querySelectorAll('#smallContentContainer .content-box').forEach(el => el.style.display = 'none');
+            const el = document.getElementById(id);
+            if(el) el.style.display = 'block';
+            elements.smallContainer.style.transform = "scale(1.1)";
+            setTimeout(() => elements.smallContainer.style.transform = "scale(1)", 300);
+        }
+
+        const wrapper = document.getElementById('bg-wrapper');
+        const colors = ['#FF5E8E', '#FFDB58', '#4DD0E1', '#FFB74D'];
+        for (let i = 0; i < 45; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'confetti-dot';
+            dot.style.left = Math.random() * 100 + 'vw';
+            dot.style.top = Math.random() * 100 + 'vh';
+            dot.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            wrapper.appendChild(dot);
+        }
+    </script>
+</body>
+</html>

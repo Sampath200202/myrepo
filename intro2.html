@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting...</title>
+    <style>
+        * { box-sizing: border-box; }
+        body, html {
+            margin: 0; padding: 0; height: 100%; width: 100%;
+            font-family: 'Poppins', sans-serif;
+            background-color: #FFF9E6; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* පින්තූරයේ මෝස්තරය */
+        .celebrate-img {
+            max-width: 80%; 
+            height: auto; 
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            animation: fadeIn 1s ease-in;
+            z-index: 5;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* පසුබිම් තිත් (Confetti) */
+        .confetti-dot { 
+            position: absolute; 
+            width: 8px; 
+            height: 8px; 
+            border-radius: 50%; 
+            opacity: 0.5; 
+            z-index: 1; 
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bg-wrapper" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; position: relative;">
+        <img src="images/p11.png" alt="Celebrate" class="celebrate-img">
+    </div>
+
+    <script>
+        // පිටුව ලෝඩ් වී තත්පර 3කට පසු cake.html වෙත යන්න
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                window.location.href = 'cake.html';
+            }, 3000); // 3000ms = තත්පර 3
+        });
+
+        // පසුබිම් අලංකරණය (Confetti)
+        const wrapper = document.getElementById('bg-wrapper');
+        const colors = ['#FF5E8E', '#FFDB58', '#4DD0E1', '#FFB74D'];
+        for (let i = 0; i < 40; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'confetti-dot';
+            dot.style.left = Math.random() * 100 + 'vw';
+            dot.style.top = Math.random() * 100 + 'vh';
+            dot.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            wrapper.appendChild(dot);
+        }
+    </script>
+</body>
+</html>

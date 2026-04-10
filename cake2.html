@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Wish Animation</title>
+    <style>
+        /* මූලික සැකසුම් */
+        * { box-sizing: border-box; }
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            font-family: 'Poppins', sans-serif;
+            background-color: #FFF9E6; /* කලින් භාවිතා කළ පසුබිම් වර්ණය */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* ටයිප් වන අකුරු සඳහා ස්ටයිල් */
+        .wish-container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+        }
+
+        #typewriter-text {
+            font-size: clamp(1.5rem, 8vw, 3rem); /* Mobile Responsive size */
+            font-weight: bold;
+            color: #FF5E8E; /* කලින් භාවිතා කළ රෝස පැහැය */
+            border-right: 4px solid #FF5E8E; /* Cursor එක */
+            white-space: nowrap;
+            overflow: hidden;
+            width: 0;
+            display: inline-block;
+        }
+
+        /* පසුබිමේ ඇති තිත් (Confetti Dots) */
+        .confetti-dot {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            opacity: 0.6;
+            z-index: 1;
+        }
+
+        /* Keyframes - ටයිප් වන ආකාරය පෙන්වීමට */
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        /* Cursor එක blink වීමට */
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wish-container">
+        <div id="typewriter-text">Happy Birthday to You! 🎂</div>
+    </div>
+
+    <script>
+        window.onload = () => {
+            const textElement = document.getElementById('typewriter-text');
+            
+            // පින්තූරය Load වූ පසු ටයිප් වන ඇනිමේෂන් එක ආරම්භ කිරීම
+            // steps(25) යනු අකුරු ගණනට අනුකූලව වෙනස් කළ හැකි අගයකි
+            textElement.style.animation = "typing 3.5s steps(25) forwards, blink 0.6s infinite";
+            
+            // පසුබිම් තිත් (Confetti Dots) නිර්මාණය කිරීම
+            createDots(60);
+        };
+
+        function createDots(count) {
+            const colors = ['#FF5E8E', '#FFDB58', '#4DD0E1', '#FFB74D'];
+            
+            for (let i = 0; i < count; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'confetti-dot';
+                
+                // අහඹු ලෙස ස්ථානය සහ වර්ණය තේරීම
+                dot.style.left = Math.random() * 100 + 'vw';
+                dot.style.top = Math.random() * 100 + 'vh';
+                dot.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                // කුඩා ඇනිමේෂන් එකක් (මදක් සෙලවීමට)
+                dot.style.transform = `scale(${Math.random()})`;
+                
+                document.body.appendChild(dot);
+            }
+        }
+    </script>
+</body>
+</html>
